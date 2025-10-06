@@ -31,7 +31,7 @@ Long description of module's purpose
     #    'demo/demo.xml',
     #],
     'aplication': True,
-    'licence': 'AGPL-3'
+    'license': 'AGPL-3'
         
 }
 

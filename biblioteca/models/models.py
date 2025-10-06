@@ -3,9 +3,9 @@
 from odoo import models, fields, api
 
 
-class bibliotecalibro(models.Model):
+class biblioteca(models.Model):
     _name = 'biblioteca.libro'
-    _description = 'biblioteca.libro'
+    _description = 'biblioteca.biblioteca'
 
     name = fields.Char()
     value = fields.Integer()
