@@ -8,11 +8,11 @@ class Biblioteca(models.Model):
     _description = 'biblioteca.biblioteca'
 
     firstname = fields.Char(string='Nombre Libro')
-    author= fields.Many2one('biblioteca.author', string='Author Libro')
-    value = fields.Integer(string='Numero de ejemplares')
+    author = fields.Many2one('biblioteca.author', string='Author del libro')
+    value = fields.Integer(string='Número de ejemplares')
     value2 = fields.Float(compute="_value_pc", store=True, string='Costo')
-    description = fields.Text(string='Resumen Libro')
-
+    description = fields.Text(string='Resumen del libro')
+    
     @api.depends('value')
     def _value_pc(self):
         for record in self:
@@ -24,6 +24,7 @@ class BibliotecaAutor(models.Model):
     _rec_name= 'firstname'
     firstname = fields.Char()
     lastname = fields.Char()
+    
     @api.depends('firstname','lastname')
     def _compute_display_name(self):
         for record in self:
