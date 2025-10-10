@@ -14,12 +14,12 @@
       </field>
     </record>
 
-        <record model="ir.ui.view" id="biblioteca_libro_form">
+    <record model="ir.ui.view" id="biblioteca_libro_form">
       <field name="name">biblioteca libro form</field>
       <field name="model">biblioteca.libro</field>
       <field name="arch" type="xml">
         <form>
-        <group>
+          <group>
           <field name="firstname"/>
           <field name="value"/>
           <field name="value2"/>
@@ -28,30 +28,30 @@
         </form>
       </field>
     </record>
+
     <record model ="ir.ui.view" id="biblioteca_author_list">
-      <field name = "name">biblioteca author list</field>
-      <field name = "model">biblioteca author list</field>
-      <field name = "arch" type "xml">
-        <form>
-          <group>
-          <field name "firstname"/>
-          <field name "lastname"/>
-          </group>
-        </form>
+      <field name ="name">biblioteca author list</field>
+      <field name ="model">biblioteca.author</field>
+      <field name ="arch" type="xml">
+        <list>
+          <field name="firstname"/>
+          <field name="lastname"/>
+        </list>
       </field>
-      </record>
+    </record>
+
     <record model ="ir.ui.view" id="biblioteca_author_form">
-      <field name = "name">biblioteca author form</field>
-      <field name = "model">biblioteca author form</field>
-      <field name = "arch" type "xml">
+      <field name ="name">biblioteca author form</field>
+      <field name ="model">biblioteca.author</field>
+      <field name ="arch" type="xml">
         <form>
           <group>
-          <field name "firstname"/>
-          <field name "lastname"/>
+          <field name="firstname"/>
+          <field name="lastname"/>
           </group>
         </form>
       </field>
-      </record>
+    </record>
     <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="biblioteca_libro_action_window">
@@ -59,8 +59,8 @@
       <field name="res_model">biblioteca.libro</field>
       <field name="view_mode">list,form</field>
     </record>
-        <record model="ir.actions.act_window" id="biblioteca_libro_action_window">
-      <field name="name">biblioteca author</field>
+    <record model="ir.actions.act_window" id="biblioteca_author_action_window">
+      <field name="name">biblioteca author window</field>
       <field name="res_model">biblioteca.author</field>
       <field name="view_mode">list,form</field>
     </record>
@@ -92,7 +92,7 @@
     <menuitem name="Author menu"
     id="biblioteca.author"
     parent="biblioteca.biblioteca_menu"
-    action="biblioteca_libro_action_window"/>
+    action="biblioteca_author_action_window"/>
     <!-- menu categories -->
 <!--
     <menuitem name="Menu 1" id="biblioteca.menu_1" parent="biblioteca.menu_root"/>

@@ -6,10 +6,9 @@ from odoo import models, fields, api
 class Biblioteca(models.Model):
     _name = 'biblioteca.libro'
     _description = 'biblioteca.biblioteca'
-    
 
     firstname = fields.Char(string='Nombre Libro')
-    author= fields.Many2one('biblioteca.autor', string='Author Libro')
+    author= fields.Many2one('biblioteca.author', string='Author Libro')
     value = fields.Integer(string='Numero de ejemplares')
     value2 = fields.Float(compute="_value_pc", store=True, string='Costo')
     description = fields.Text(string='Resumen Libro')
@@ -20,12 +19,12 @@ class Biblioteca(models.Model):
             record.value2 = float(record.value) / 100
 
 class BibliotecaAutor(models.Model):
-    _name= 'biblioteca.autor'
-    _description = 'biblioteca.autor'
+    _name= 'biblioteca.author'
+    _description = 'biblioteca.author'
     _rec_name= 'firstname'
     firstname = fields.Char()
     lastname = fields.Char()
-    @api.depends('firstname', 'lastname')
+    @api.depends('firstname','lastname')
     def _compute_display_name(self):
         for record in self:
             record.display_name= f"{record.firstname}{record.lastname}"
