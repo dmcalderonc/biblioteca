@@ -80,7 +80,7 @@
           <field name="cedula"/>
           <field name="telefono"/>
           <field name="direccion"/>
-          <field name="correo"/>
+          <field name="correo" widget="email"/>
           <field name="tipo_usuario"/>
           <field name="historial_prestamo"/>
         </list>
@@ -97,6 +97,10 @@
           <field name="lastname"/>
           <field name="cedula"/>
           <field name="telefono"/>
+          <field name="direccion"/>
+          <field name="correo" widget="email"/>
+          <field name="tipo_usuario"/>
+          <field name="historial_prestamo"/>
           </group>
         </form>
       </field>

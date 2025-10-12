@@ -41,15 +41,25 @@ class BibliotecaAutor(models.Model):
 class BibliotecaUsuario(models.Model):
     _name= 'biblioteca.usuario'
     _description= 'biblioteca.usuario'
-
+    _rec_name='firstname'
     firstname= fields.Char(string='Nombre')
     lastname = fields.Char(string='Apellido')
     cedula = fields.Integer(string='Cédula')
     telefono= fields.Integer(string='Telefono')
     direccion= fields.Char(string='Dirección')
     correo= fields.Char(string='Correo electronico')
-    tipo_usuario= fields.Char(string='Tipo de usuario')
-    historial_prestamo= fields.Char(string='Historial de prestamo')
+    tipo_usuario= fields.Selection(selection=[('alumno', 'Alumno'),
+                                              ('profesor', 'Profesor'),
+                                              ('personal', 'Personal'),
+                                              ('externo', 'Usuario externo')],string='Tipo de usuario')
+    historial_prestamo= fields.Many2one('biblioteca.prestamo', string='Historial de prestamo')
+
+    @api.depends('firstname','lastname')
+    def _compute_display_name(self):
+        for record in self:
+            record.display_name= f"{record.firstname}{" "}{record.lastname}"
+
+
 
 class BibliotecaEditorial(models.Model):
     _name= 'biblioteca.editorial'
@@ -86,8 +96,8 @@ class BibliotecaGeneros(models.Model):
 class BibliotecaPrestamos(models.Model):
     _name= 'biblioteca.prestamo'
     _description= 'biblioteca.prestamo'
-    
-    usuario= fields.Char(string='Usuario')
+    _rec_name= 'libro'
+    usuario= fields.Many2one('biblioteca.usuario', string='Usuario')
     libro=fields.Many2one('biblioteca.libro', string='Titulo del libro')
     fecha_prestamo= fields.Date(string='Fecha de prestamo')
     fecha_devolucion= fields.Date(string='Fecha de devolución')
@@ -96,16 +106,23 @@ class BibliotecaPrestamos(models.Model):
                                         ('encurso', 'En curso'),
                                         ('retrasado', 'Retrasado'),],string='Estado')
     
+    @api.depends('libro','estado')
+    def _compute_display_name(self):
+        for record in self:
+            record.display_name= f"{record.libro}{" "}{record.estado}"
+
 class BibliotecaMultas(models.Model):
     _name= 'biblioteca.multa'
     _description= 'biblioteca.multa'
-    usuario= fields.Char(string='Usuario')
+    usuario= fields.Many2one('biblioteca.usuario', string='Usuario')
     monto= fields.Float(string='Monto a pagar')
     motivo= fields.Selection(selection=[('retraso', 'Retraso'),
                                         ('daño', 'Daño'),
                                         ('perdida','Perdida')],string='Causa de la multa')
     pago= fields.Selection(selection=[('pendiente', 'Pendiente'),
                                         ('saldada', 'Saldada')],string='Pago  de la multa')
+    
+   
     
 class BibliotecaUbicacion(models.Model):
     _name= 'biblioteca.ubicacion'
