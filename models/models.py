@@ -13,6 +13,7 @@ class Biblioteca(models.Model):
     genero = fields.Char(string='Género')
     fecha = fields.Char(string='Año de publicación')
     description = fields.Text(string='Resumen del libro')
+    editorial = fields.Many2one('biblioteca.editorial', string='Editorial')
     value = fields.Integer(string='Número de ejemplares')
     estado= fields.Char(string='Estado')
     value2 = fields.Float(compute="_value_pc", store=True, string='Costo')
@@ -43,4 +44,28 @@ class BibliotecaUsuario(models.Model):
     lastname = fields.Char(string='Apellido')
     cedula = fields.Integer(string='Cédula')
     telefono= fields.Integer(string='Telefono')
-        
+    direccion= fields.Char(string='Dirección')
+    correo= fields.Char(string='Correo electronico')
+    tipo_usuario= fields.Char(string='Tipo de usuario')
+    historial_prestamo= fields.Char(string='Historial de prestamo')
+
+class BibliotecaEditorial(models.Model):
+    _name= 'biblioteca.editorial'
+    _description= 'biblioteca.editorial'
+    _rec_name='editorial'
+    editorial= fields.Char(string='Editorial')
+    @api.depends('editorial')
+    def _compute_display_name(self):
+        for record in self:
+            record.display_name= f"{record.editorial}"
+
+class BibliotecaPersonal(models.Model):
+    _name= 'biblioteca.personal'
+    _description= 'biblioteca.personal'
+
+    firstname = fields.Char(string='Nombre')
+    lastname = fields.Char(string='Apellido')
+    cargo= fields.Char(string='Cargo')
+    usuario= fields.Char(string='Usuario')
+    clave= fields.Char(string='Clave')
+
