@@ -9,7 +9,7 @@ class Biblioteca(models.Model):
     
 
     firstname = fields.Char(string='Nombre Libro')
-    author= fields.Many2one('biblioteca.autor', string='Author Libro')
+    author= fields.Many2one('biblioteca.autor', string='Autor Libro')
     value = fields.Integer(string='Numero de ejemplares')
     value2 = fields.Float(compute="_value_pc", store=True, string='Costo')
     description = fields.Text(string='Resumen Libro')
