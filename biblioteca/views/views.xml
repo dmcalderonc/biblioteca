@@ -14,9 +14,9 @@
           <field name="fecha"/>
           <field name="description"/>
           <field name="editorial"/>
-          <field name="value"/>
+          <field name="ejemplares"/>
           <field name="estado"/>
-          <field name="value2"/>
+          <field name="costo"/>
           <field name="ubicacion"/>
         </list>
       </field>
@@ -35,9 +35,9 @@
           <field name="fecha"/>
           <field name="description"/>
           <field name="editorial"/>
-          <field name="value"/>
+          <field name="ejemplares"/>
           <field name="estado"/>
-          <field name="value2"/>
+          <field name="costo"/>
           <field name="ubicacion"/>
           </group>
         </form>
@@ -51,6 +51,7 @@
         <list>
           <field name="firstname"/>
           <field name="lastname"/>
+          <field name="nacimiento"/>
           <field name="alias"/>
           <field name="libros_autores"/>
         </list>
@@ -65,6 +66,7 @@
           <group>
           <field name="firstname"/>
           <field name="lastname"/>
+          <field name="nacimiento"/>
           <field name="alias"/>
           <field name="libros_autores"/>
           </group>
@@ -194,6 +196,8 @@
           <field name="fecha_prestamo"/>
           <field name="fecha_devolucion"/>
           <field name="estado"/>
+          <field name="multa_bool"/>
+          <field name="multa"/>
         </list>
       </field>
     </record>
@@ -202,13 +206,21 @@
       <field name ="name">biblioteca prestamo form</field>
       <field name ="model">biblioteca.prestamo</field>
       <field name ="arch" type="xml">
+      <header>
+        <button string="Prestar" type="object" name="generar_prestamo"
+        invisible="estado in ('p','d','m')"/>
+        <field name="estado" widget='statusbar'>
+      </header>
         <form>
           <group>
+          <field name="name" readonly="estado in ('p','d','m')"/>
           <field name="usuario"/>
           <field name="libro"/>
           <field name="fecha_prestamo"/>
           <field name="fecha_devolucion"/>
           <field name="estado"/>
+          <field name="multa_bool"/>
+          <field name="multa"/>
           </group>
         </form>
       </field>
@@ -219,6 +231,7 @@
       <field name ="model">biblioteca.multa</field>
       <field name ="arch" type="xml">
         <list>
+          <field name="codigo"/>
           <field name="usuario"/>
           <field name="monto"/>
           <field name="motivo"/>
@@ -233,6 +246,7 @@
       <field name ="arch" type="xml">
         <form>
           <group>
+          <field name="codigo"/>
           <field name="usuario"/>
           <field name="monto"/>
           <field name="motivo"/>

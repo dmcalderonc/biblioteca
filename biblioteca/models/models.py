@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 
 class Biblioteca(models.Model):
@@ -15,15 +16,15 @@ class Biblioteca(models.Model):
     fecha = fields.Char(string='Año de publicación')
     description = fields.Text(string='Resumen del libro')
     editorial = fields.Many2one('biblioteca.editorial', string='Editorial')
-    value = fields.Integer(string='Número de ejemplares')
+    ejemplares = fields.Integer(string='Número de ejemplares')
     estado= fields.Char(string='Estado')
-    value2 = fields.Float(compute="_value_pc", store=True, string='Costo')
-    ubicacion = fields.Many2one('biblioteca.ubicacion', string="Ubicación del libro")
+    costo = fields.Float(compute="_value_pc", store=True, string='Costo')
+    ubicacion = fields.Many2one('biblioteca.ubicacion', string="Ubicación física")
 
-    @api.depends('value')
+    @api.depends('costo')
     def _value_pc(self):
         for record in self:
-            record.value2 = float(record.value) / 100
+           record.costo = float(record.ejemplares) / 100
 
 class BibliotecaAutor(models.Model):
     _name= 'biblioteca.author'
@@ -31,6 +32,7 @@ class BibliotecaAutor(models.Model):
     _rec_name= 'firstname'
     firstname = fields.Char(string='Nombre')
     lastname = fields.Char(string='Apellido')
+    nacimiento =fields.Date(string='Fecha de nacimiento')
     alias= fields.Char(string='Pseudonimo')
     libros_autores= fields.Many2many('biblioteca.libro',
                                     relation="Libro_author_rel",
@@ -61,8 +63,18 @@ class BibliotecaUsuario(models.Model):
     def _compute_display_name(self):
         for record in self:
             record.display_name= f"{record.firstname}{" "}{record.lastname}"
-
-
+            
+    @api.onchange('cedula')
+    def onchange_cedula(self):
+        if self.cedula:
+            if int(self.cedula) >'0' and int(self.cedula)<100:
+                raise ValueError("el numero es correcto")
+                return{'warning':{'title':"alerta",
+                                  'message':"el numero es correcto"}}
+                print("Hola mundo")
+            else:
+                raise ValueError("El numero impreso es 0")  
+        
 
 class BibliotecaEditorial(models.Model):
     _name= 'biblioteca.editorial'
@@ -95,19 +107,21 @@ class BibliotecaGeneros(models.Model):
         for record in self:
             record.display_name= f"{record.genero}"
 
-
 class BibliotecaPrestamos(models.Model):
     _name= 'biblioteca.prestamo'
     _description= 'biblioteca.prestamo'
     _rec_name= 'libro'
     usuario= fields.Many2one('biblioteca.usuario', string='Usuario')
-    libro=fields.Many2one('biblioteca.libro', string='Titulo del libro')
+    libro=fields.One2many('biblioteca.libro', string='Titulo del libro')
     fecha_prestamo= fields.Date(string='Fecha de prestamo')
     fecha_devolucion= fields.Date(string='Fecha de devolución')
-    estado= fields.Selection(selection=[('disponible', 'Disponible'),
-                                        ('devuelto', 'Devuelto'),
-                                        ('encurso', 'En curso'),
-                                        ('retrasado', 'Retrasado'),],string='Estado')
+    estado= fields.Selection(selection=[('b', 'Borrador'),
+                                        ('p', 'Prestamo'),
+                                        ('m', 'Multa'),
+                                        ('d', 'Devuelto'),],string='Estado', default='b')
+    multa_bool= fields.Boolean(default=False)
+    multa=fields.Float()
+    
     
     @api.depends('libro','estado')
     def _compute_display_name(self):
@@ -117,6 +131,7 @@ class BibliotecaPrestamos(models.Model):
 class BibliotecaMultas(models.Model):
     _name= 'biblioteca.multa'
     _description= 'biblioteca.multa'
+    codigo=fields.Char(string='Código de multa')
     usuario= fields.Many2one('biblioteca.usuario', string='Usuario')
     monto= fields.Float(string='Monto a pagar')
     motivo= fields.Selection(selection=[('retraso', 'Retraso'),
@@ -124,8 +139,6 @@ class BibliotecaMultas(models.Model):
                                         ('perdida','Perdida')],string='Causa de la multa')
     pago= fields.Selection(selection=[('pendiente', 'Pendiente'),
                                         ('saldada', 'Saldada')],string='Pago  de la multa')
-    
-   
     
 class BibliotecaUbicacion(models.Model):
     _name= 'biblioteca.ubicacion'
