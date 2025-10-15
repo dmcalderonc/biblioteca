@@ -206,22 +206,22 @@
       <field name ="name">biblioteca prestamo form</field>
       <field name ="model">biblioteca.prestamo</field>
       <field name ="arch" type="xml">
-      <header>
-        <button string="Prestar" type="object" name="generar_prestamo"
-        invisible="estado in ('p','d','m')"/>
-        <field name="estado" widget='statusbar'>
-      </header>
         <form>
-          <group>
-          <field name="name" readonly="estado in ('p','d','m')"/>
-          <field name="usuario"/>
-          <field name="libro"/>
-          <field name="fecha_prestamo"/>
-          <field name="fecha_devolucion"/>
-          <field name="estado"/>
-          <field name="multa_bool"/>
-          <field name="multa"/>
-          </group>
+          <header>
+            <button string="Prestar" type="object" name="generar_prestamo"
+            invisible="estado in ('p','d','m')"/>
+            <field name="estado" widget='statusbar'/>
+          </header>
+              <group>
+              <field name="name" readonly="estado in ('p','d','m')"/>
+              <field name="usuario"/>
+              <field name="libro"/>
+              <field name="fecha_prestamo"/>
+              <field name="fecha_devolucion"/>
+              <field name="estado"/>
+              <field name="multa_bool"/>
+              <field name="multa"/>
+              </group>
         </form>
       </field>
     </record>

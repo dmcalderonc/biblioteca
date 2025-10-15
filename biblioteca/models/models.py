@@ -111,8 +111,9 @@ class BibliotecaPrestamos(models.Model):
     _name= 'biblioteca.prestamo'
     _description= 'biblioteca.prestamo'
     _rec_name= 'libro'
+    name=fields.Char()
     usuario= fields.Many2one('biblioteca.usuario', string='Usuario')
-    libro=fields.One2many('biblioteca.libro', string='Titulo del libro')
+    libro=fields.One2many('biblioteca.libro', 'firstname' , string='Titulo del libro')
     fecha_prestamo= fields.Date(string='Fecha de prestamo')
     fecha_devolucion= fields.Date(string='Fecha de devolución')
     estado= fields.Selection(selection=[('b', 'Borrador'),
@@ -121,6 +122,10 @@ class BibliotecaPrestamos(models.Model):
                                         ('d', 'Devuelto'),],string='Estado', default='b')
     multa_bool= fields.Boolean(default=False)
     multa=fields.Float()
+    
+    def generar_prestamo(self):
+        print("generando Prestamo")
+        self.write({'estado': 'p'})
     
     
     @api.depends('libro','estado')
