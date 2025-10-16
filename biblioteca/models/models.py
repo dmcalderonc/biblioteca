@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from datetime import datetime, timedelta
 
 
 class Biblioteca(models.Model):
@@ -57,7 +58,7 @@ class BibliotecaUsuario(models.Model):
                                               ('profesor', 'Profesor'),
                                               ('personal', 'Personal'),
                                               ('externo', 'Usuario externo')],string='Tipo de usuario')
-    historial_prestamo= fields.Many2one('biblioteca.prestamo', string='Historial de prestamo')
+    historial_prestamo= fields.Char(string='Historial de prestamo')
 
     @api.depends('firstname','lastname')
     def _compute_display_name(self):
@@ -89,12 +90,18 @@ class BibliotecaEditorial(models.Model):
 class BibliotecaPersonal(models.Model):
     _name= 'biblioteca.personal'
     _description= 'biblioteca.personal'
+    _rec_name='firstname'
 
     firstname = fields.Char(string='Nombre')
     lastname = fields.Char(string='Apellido')
     cargo= fields.Char(string='Cargo')
     usuario= fields.Char(string='Usuario')
     clave= fields.Char(string='Clave')
+    
+    @api.depends('firstname','lastname')
+    def _compute_display_name(self):
+        for record in self:
+            record.display_name= f"{record.firstname}{" "}{record.lastname}"
 
 class BibliotecaGeneros(models.Model):
     _name= 'biblioteca.genero'
@@ -110,11 +117,11 @@ class BibliotecaGeneros(models.Model):
 class BibliotecaPrestamos(models.Model):
     _name= 'biblioteca.prestamo'
     _description= 'biblioteca.prestamo'
-    _rec_name= 'libro'
-    name=fields.Char()
+    _rec_name= 'fecha_max'
+    name=fields.Char(required=True)
     usuario= fields.Many2one('biblioteca.usuario', string='Usuario')
     libro=fields.One2many('biblioteca.libro', 'firstname' , string='Titulo del libro')
-    fecha_prestamo= fields.Date(string='Fecha de prestamo')
+    fecha_prestamo= fields.Datetime(default=datetime.now(), string='Fecha de prestamo')
     fecha_devolucion= fields.Date(string='Fecha de devolución')
     estado= fields.Selection(selection=[('b', 'Borrador'),
                                         ('p', 'Prestamo'),
@@ -122,16 +129,30 @@ class BibliotecaPrestamos(models.Model):
                                         ('d', 'Devuelto'),],string='Estado', default='b')
     multa_bool= fields.Boolean(default=False)
     multa=fields.Float()
+    fecha_max=fields.Datetime(compute='_compute_fecha_devo', string='Fecha Maxima de devolución')
+    personal=fields.Many2one('res.users', string='Persona que presto el libro',
+                             default= lambda self: self.env.uid)
+    
+    def write(self, vals):
+        seq = self.env.ref('biblioteca.sequence_codigo_prestamos').next_by_code('biblioteca.prestamo')
+        vals['name'] = seq
+        return super(BibliotecaPrestamos,self).write(vals)
     
     def generar_prestamo(self):
         print("generando Prestamo")
         self.write({'estado': 'p'})
     
     
-    @api.depends('libro','estado')
+    '''@api.depends('libro','estado')
     def _compute_display_name(self):
         for record in self:
-            record.display_name= f"{record.libro}{" "}{record.estado}"
+            record.display_name= f"{record.libro}{" "}{record.estado}"'''
+            
+    @api.depends('fecha_max','fecha_prestamo')
+    def _compute_fecha_devo(self):
+        for record in self:
+            record.fecha_max = record.fecha_prestamo + timedelta(days=2)
+
 
 class BibliotecaMultas(models.Model):
     _name= 'biblioteca.multa'

@@ -198,6 +198,7 @@
           <field name="estado"/>
           <field name="multa_bool"/>
           <field name="multa"/>
+          <field name="fecha_max"/>
         </list>
       </field>
     </record>
@@ -213,14 +214,17 @@
             <field name="estado" widget='statusbar'/>
           </header>
               <group>
-              <field name="name" readonly="estado in ('p','d','m')"/>
-              <field name="usuario"/>
-              <field name="libro"/>
-              <field name="fecha_prestamo"/>
-              <field name="fecha_devolucion"/>
-              <field name="estado"/>
-              <field name="multa_bool"/>
-              <field name="multa"/>
+              <label for="name" string="Codigo de prestamo"/>
+              <field name="name" readonly="estado in ('p','d','m')" nolabel="1"/>
+              <field name="usuario" readonly="estado in ('p','d','m')"/>
+              <field name="libro" readonly="estado in ('p','d','m')"/>
+              <field name="fecha_prestamo" readonly="estado in ('p','d','m')" />
+              <field name="fecha_devolucion" readonly="estado in ('p','d','m')" required="estado in ('p','m')"/>
+              <field name="estado" readonly="estado in ('p','d','m')"/>
+              <field name="multa_bool" readonly="estado in ('p','d','m')"/>
+              <field name="multa" readonly="estado in ('p','d','m')" invisible="multa_bool ==False"/>
+              <field name="fecha_max" readonly="estado in ('p','d','m')"/>
+              <field name="personal" readonly="estado in ('p','d','m')"/>
               </group>
         </form>
       </field>
